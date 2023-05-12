@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+pylint = "*"
+isort = "*"
+mypy = "*"
+black = "*"
+flake8 = "*"
+bandit = "*"
+
+[packages]
+langchain = "*"
+jupyterlab = "*"
+notebook = "*"
+voila = "*"
+google-search-results = "*"
+google-api-python-client = "*"
+openai = "*"
+termcolor = "*"
+duckduckgo-search = "*"
+
+[requires]
+python_version = "3.10"
+
+[pipenv]
+allow_prereleases = true
