@@ -1,4 +1,6 @@
-from typing import Dict, List, Tuple, Union
+
+from dataclasses import dataclass
+from typing import Dict, List, Tuple
 
 from langchain import LLMChain
 from langchain.agents import AgentExecutor, LLMSingleActionAgent, Tool
@@ -11,10 +13,35 @@ from agent_lib.utils import CustomOutputParser, CustomPromptTemplate
 class MissingAgreementStatus(Exception):
     pass
 
+
+@dataclass
+class Argument:
+
+    id: int
+    proposition: str
+    proposition_id: int
+    argument: str
+    agreement_state: str
+    label: int
+    
+    def __init__(self):
+        pass
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "proposition": self.proposition,
+            "proposition_id": self.proposition_id,
+            "argument": self.argument,
+            "agreement_state": self.agreement_state,
+            "label": self.label,
+        }
+
+
 class LLMAgent():
 
-    name: str = None
-    executor: AgentExecutor = None
+    name: str
+    executor: AgentExecutor
     
     def __init__(
         self,
@@ -52,7 +79,7 @@ class LLMAgent():
     def execute(self, text: str) -> str:
         return self.executor.run(text)
     
-    def argue(self, text: str, defendant: str) -> Dict[str, Union[str, int]]:
+    def argue(self, id: str, proposition: str, proposition_id: str) -> Argument:
         
         label_enc = {
             "agree": 1,
@@ -60,25 +87,20 @@ class LLMAgent():
             "neutral": 0
         }
         
-        arg_dict: Dict[str, Union[str, int]] = {
-            "defendant": "__name_of_agent__",
-            "proposition": "__target__",
-            "argument": "__argument__",
-            "agreement_state": "__argument__",
-            "label": 0,  # 1: agree, -1: disagree, 0: neutral
-        }
+        arg = Argument()
 
-        arg_dict["defendant"] = defendant
-        arg_dict["proposition"] = text
-        argument = self.execute(text)
+        arg.id = id
+        arg.proposition_id = proposition_id
+        arg.proposition = proposition
+        argument = self.execute(proposition)
         (
-            arg_dict["agreement_state"],
-            arg_dict["argument"]
+            arg.agreement_state,
+            arg.argument
         ) = self.parse_argument(argument)
-        if arg_dict["agreement_state"] not in label_enc.keys():
+        if arg.agreement_state not in label_enc.keys():
             raise MissingAgreementStatus(f"Agent {self.name} is missing agreement statement!")
-        arg_dict["label"] = label_enc[arg_dict["agreement_state"]]
-        return arg_dict
+        arg.label = label_enc[arg.agreement_state]
+        return arg
 
     @staticmethod
     def parse_argument(argument: str) -> Tuple[str, str]:
