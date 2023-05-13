@@ -49,6 +49,7 @@ def register_execution_policy(subclass):
 class SequentialExecutionPolicy(DiscussionExecutionPolicy):
     name = "SEQUENTIAL"
     description = "Executes discussions in a sequential order."
+    max_arguments = 10
 
     @classmethod
     def exec(cls, framework: TODF, verbose: bool = False):
@@ -58,18 +59,30 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
             )
         # Argumentation
         random.shuffle(framework.agents)
-        for agent in framework.agents:
-            for argument in framework.arguments:
-                if agent.id == argument.creator:
-                    continue
-                print_verbose(
-                    f"Agent {agent} sees argument {argument}", verbose=verbose
-                )
-                agent.see_argument(argument)
-                new_arg = agent.argue(argument=argument)
-                if new_arg is None:
-                    continue
-                framework.arguments.append(new_arg)
+        has_new_arguments = True
+        while (
+            len(framework.arguments) < cls.max_arguments
+            or not has_new_arguments
+        ):
+            has_new_arguments = False
+            for agent in framework.agents:
+                for argument in framework.arguments:
+                    if (
+                        agent.id == argument.creator
+                        or argument in agent.seen_arguments
+                    ):
+                        continue
+                    print_verbose(
+                        f"Agent {agent} sees argument {argument}",
+                        verbose=verbose,
+                    )
+                    agent.see_argument(argument)
+                    new_arg = agent.argue(argument=argument)
+                    if new_arg is None:
+                        continue
+                    else:
+                        has_new_arguments = True
+                    framework.arguments.append(new_arg)
 
         # Labelling/Voting
         random.shuffle(framework.agents)
@@ -79,6 +92,9 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
                 # on counter argument generation, a label is instantly applied
                 # depending if it supports or opposes
                 if agent.id in arg.labelling.keys():
+                    print(
+                        f"Agent {agent} already voted argument {arg.id} : {arg.labelling[agent.id]}"
+                    )
                     continue
 
                 arg.labelling[agent.id] = agent.vote(arg)
