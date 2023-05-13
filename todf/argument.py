@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 
 class Argument:
@@ -13,8 +13,9 @@ class Argument:
         self.text = text
         self.creator = creator
         self.is_target = is_target
-        self.attacks: List[str] = []
-        self.defends: List[str] = []
+        self.supports: List[str] = []
+        self.opposes: List[str] = []
+        self.labelling: Dict[str, int] = {}
 
     def __str__(self):
         return f"{self.id} (creator: {self.creator})"
