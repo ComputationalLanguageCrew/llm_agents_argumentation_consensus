@@ -108,10 +108,81 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
 class RoundExecutionPolicy(DiscussionExecutionPolicy):
     name = "ROUNDS"
     description = "Executes discussions in rounds."
+    max_depth: int
 
-    @classmethod
+    def __init__(self, max_depth: int = 1):
+        self.max_depth = max_depth
+
     def exec(cls, framework: TODF, verbose: bool = False):
-        print("Executing discussion in rounds.")
+        if verbose:
+            print(
+                "Executing discussion in rounds. Argumentation phase is starting..."
+            )
+        depth = 0
+        discussion: Dict[int, Dict] = {}
+
+        # Argumentation
+        while depth <= cls.max_depth:
+            random.shuffle(framework.agents)
+            if depth == 0:
+                discussion[depth] = {}
+                proposition = framework.arguments[0]
+                for agent in framework.agents:
+                    discussion[depth][agent.id] = []
+                    print_verbose(
+                        f"Agent {agent} sees argument {proposition}",
+                        verbose=verbose
+                    )
+                    agent.see_argument(proposition)
+                    new_arg = agent.argue(argument=proposition)
+                    if new_arg is None:
+                        continue
+                    framework.arguments.append(new_arg)
+                    discussion[depth][agent.id].append(new_arg)
+                depth += 1
+                continue
+            
+            # Let agents argue on other agents' arguments
+            discussion[depth] = {}
+            for agent in framework.agents:
+                discussion[depth][agent.id] = []
+                for prev_id, prev_args in discussion[depth-1].items():
+                    if agent.id == prev_id:
+                        continue
+                    for prev_arg in prev_args:
+                        print_verbose(
+                            f"\nAgent {agent} sees argument {prev_arg}",
+                            verbose=verbose
+                        )
+                        agent.see_argument(prev_arg)
+                        new_arg = agent.argue(argument=prev_arg)
+                        if new_arg is None:
+                            continue
+                        framework.arguments.append(new_arg)
+                        discussion[depth][agent.id].append(new_arg)
+            
+            depth += 1
+        
+        # Labelling/Voting
+        random.shuffle(framework.agents)
+        for agent in framework.agents:
+            for arg in framework.arguments:
+                # if agent has already a label in that argument continue
+                if agent.id in arg.labelling.keys():
+                    print(
+                        f"Agent {agent} already voted argument {arg.id} : {arg.labelling[agent.id]}"
+                    )
+                    continue
+                arg.labelling[agent.id] = agent.vote(arg)
+                print_verbose(
+                    f"\nAgent {agent} voted argument {arg.id} : {arg.labelling[agent.id]}",
+                    verbose=verbose
+                )
+                        
+            
+            
+            
+            
 
 
 @register_execution_policy

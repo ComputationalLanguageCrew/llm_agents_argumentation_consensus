@@ -1,12 +1,12 @@
-from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
-
+from langchain.llms import OpenAI
 from langchain.memory import (
     ConversationBufferWindowMemory,
     ConversationSummaryBufferMemory,
 )
 
 from todf.agent import Agent, AgentEngine
+from todf.policies import RoundExecutionPolicy, SequentialExecutionPolicy
 from todf.todf import Argument, Discussion
 
 proposition = Argument(
@@ -100,7 +100,7 @@ ag5 = Agent(
 )
 
 ag6 = Agent(
-    id="ag3",
+    id="ag6",
     name="Slavoj Žižek",
     persona="""Slovenian philosopher, cultural theorist and public intellectual.""",
     engine=AgentEngine(
@@ -113,9 +113,12 @@ ag6 = Agent(
     ),
 )
 
-agents = [ag5, ag6]
+agents = [ag5, ag6, ag3]
+
+#policy = SequentialExecutionPolicy()
+policy = RoundExecutionPolicy(max_depth=2)
 
 discussion = Discussion(
-    proposition=proposition, agents=agents, policy="SEQUENTIAL", verbose=True
+    proposition=proposition, agents=agents, policy=policy, verbose=True
 )
 discussion.run()

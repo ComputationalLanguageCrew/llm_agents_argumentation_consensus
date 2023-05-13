@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import List
 
 from todf.agent import Agent
 from todf.argument import Argument
-from todf.policies import ExecutionPolicies
-from todf.utils import print_typing, print_verbose
+from todf.policies import DiscussionExecutionPolicy, ExecutionPolicies
+from todf.utils import print_verbose
 
 
 class TODF:
@@ -18,12 +18,12 @@ class Discussion:
         self,
         proposition: Argument,
         agents: List[Agent],
-        policy: str = "SEQUENTIAL",
+        policy: DiscussionExecutionPolicy,
         verbose: bool = True,
     ):
         self.proposition = proposition
         self.framework = TODF(target=proposition, agents=agents)
-        self.execution_policy = ExecutionPolicies.get_policy(policy)
+        self.execution_policy = policy
         self.verbose = verbose
 
     def __repr__(self):
