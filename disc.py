@@ -27,7 +27,14 @@ ag1 = Agent(
     persona="""40 year old unemployed who believes in maintaining traditional societal hierarchies, 
             fears people from different cultural, ethnic, or religious backgrounds and 
             susceptible to conspiracy theories""",
-    engine=agent_engine,
+    engine=AgentEngine(
+        llm,
+        memory=ConversationSummaryBufferMemory(
+            llm=OpenAI(), max_token_limit=300
+        ),
+        tools=[],
+        verbose=True,
+    ),
 )
 
 ag2 = Agent(
@@ -37,7 +44,14 @@ ag2 = Agent(
             sharp and analytical thinker, 
             forward-thinking and open to new ideas, 
             and living in New York""",
-    engine=agent_engine,
+    engine=AgentEngine(
+        llm,
+        memory=ConversationSummaryBufferMemory(
+            llm=OpenAI(), max_token_limit=300
+        ),
+        tools=[],
+        verbose=True,
+    ),
 )
 
 ag3 = Agent(
@@ -47,7 +61,14 @@ ag3 = Agent(
             a rational approach to problem-solving, 
             empathy towards disadvantaged or marginalized groups and individuals,
             and a passion for constructive dialogue""",
-    engine=agent_engine,
+    engine=AgentEngine(
+        llm,
+        memory=ConversationSummaryBufferMemory(
+            llm=OpenAI(), max_token_limit=300
+        ),
+        tools=[],
+        verbose=True,
+    ),
 )
 
 agents = [ag1, ag2, ag3]
