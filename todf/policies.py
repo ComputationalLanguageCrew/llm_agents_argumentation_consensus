@@ -70,16 +70,21 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
                 if new_arg is None:
                     continue
                 framework.arguments.append(new_arg)
+
         # Labelling/Voting
         random.shuffle(framework.agents)
         for agent in framework.agents:
             for arg in framework.arguments:
                 # if agent has already a label in that argument continue
+                # on counter argument generation, a label is instantly applied
+                # depending if it supports or opposes
                 if agent.id in arg.labelling.keys():
                     continue
+
                 arg.labelling[agent.id] = agent.vote(arg)
                 print_verbose(
-                    f"Agent {agent} voted argument {agent.id} : {arg.labelling[agent.id]}", verbose=verbose
+                    f"Agent {agent} voted argument {arg.id} : {arg.labelling[agent.id]}",
+                    verbose=verbose,
                 )
 
 

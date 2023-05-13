@@ -157,22 +157,21 @@ class Agent:
             stop=["\nObservation:"],
             allowed_tools=self.engine.get_tool_names(),
         )
-        
+
         self.executor = AgentExecutor.from_agent_and_tools(
             agent=agent,
             tools=self.engine.tools,
             memory=self.engine.memory,
             verbose=self.engine.verbose,
         )
-        
+
         voting_template = f"""
         Pretend that you are a {self.persona}.
         Express as best as you can your opinion only with a YES, NO or UNDECIDED 
         about the following argument: {{argument}}"""
 
         voting_prompt = PromptTemplate(
-            template=voting_template,
-            input_variables=["argument"]
+            template=voting_template, input_variables=["argument"]
         )
 
         self.vote_chain = LLMChain(prompt=voting_prompt, llm=self.engine.llm)
@@ -188,8 +187,10 @@ class Agent:
         )
         if result == "oppose":
             new_arg.opposes.append(argid_ud)
+            new_arg.labelling[self.id] = -1
         elif result == "support":
             new_arg.supports.append(argid_ud)
+            new_arg.labelling[self.id] = +1
         return new_arg
 
     def see_argument(self, argument: Argument):
@@ -217,16 +218,18 @@ class Agent:
         justification = response.replace(f"[{result}]", "").strip()
         new_argument = self.new_argument(result, justification, argument.id)
         self.argued_arguments.append(argument.id)
-    
+
         return new_argument
 
     def vote(self, arg: Argument) -> int:
         label = self.vote_chain.run(arg.text)
-        label = ''.join(char for char in label.lower() if char.isalpha() or char.isspace())
-        
-        if 'yes' in label:
+        label = "".join(
+            char for char in label.lower() if char.isalpha() or char.isspace()
+        )
+
+        if "yes" in label:
             return 1
-        if 'no' in label:
+        if "no" in label:
             return -1
         # 'undecided'
         return 0
