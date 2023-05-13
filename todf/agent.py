@@ -1,7 +1,7 @@
 import re
-from typing import List, Union
+from typing import List, Optional, Tuple, Union
 
-from langchain import LLMChain
+from langchain import LLMChain, PromptTemplate
 from langchain.agents import (
     AgentExecutor,
     AgentOutputParser,
@@ -100,15 +100,8 @@ class Agent:
         self.argued_arguments: List[str] = []
         self.engine = engine
 
-    def __str__(self):
-        return f"{self.id}: {self.name}"
-
-    def see_argument(self, argument: Argument):
-        self.seen_arguments.append(argument.id)
-
-    def argue(self, argument: Argument):
         template_with_history = f"""
-        Pretend that you are a {self.persona}. 
+        Pretend that you are a {self.persona}.
         Support or oppose the following proposition: {{input}}
         You have access to the following tools: {self.engine.no_tools_str}
 
@@ -164,13 +157,46 @@ class Agent:
             stop=["\nObservation:"],
             allowed_tools=self.engine.get_tool_names(),
         )
-        executor = AgentExecutor.from_agent_and_tools(
+        
+        self.executor = AgentExecutor.from_agent_and_tools(
             agent=agent,
             tools=self.engine.tools,
             memory=self.engine.memory,
             verbose=self.engine.verbose,
         )
-        response = executor.run(argument.text)
+        
+        voting_template = f"""
+        Pretend that you are a {self.persona}.
+        Express as best as you can your opinion only with a YES, NO or UNDECIDED 
+        about the following argument: {{argument}}"""
+
+        voting_prompt = PromptTemplate(
+            template=voting_template,
+            input_variables=["argument"]
+        )
+
+        self.vote_chain = LLMChain(prompt=voting_prompt, llm=self.engine.llm)
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"
+
+    def new_argument(self, result: str, text: str, argid_ud: str):
+        new_arg = Argument(
+            id=f"{self.id}_{len(self.argued_arguments)+1}",
+            text=text,
+            creator=self.id,
+        )
+        if result == "oppose":
+            new_arg.opposes.append(argid_ud)
+        elif result == "support":
+            new_arg.supports.append(argid_ud)
+        return new_arg
+
+    def see_argument(self, argument: Argument):
+        self.seen_arguments.append(argument.id)
+
+    def argue(self, argument: Argument) -> Optional[Argument]:
+        response = self.executor.run(argument.text)
 
         match = re.match(
             r"^\[(.*?)\]", response
@@ -178,6 +204,7 @@ class Agent:
 
         if not match:
             print("** failure **")  # LLM fail, agent ignores argument
+            return None
 
         print(response)
 
@@ -185,9 +212,24 @@ class Agent:
 
         if "pass" in result.lower():
             print("** failure **")
+            return None
 
-    def vote(self):
-        pass
+        justification = response.replace(f"[{result}]", "").strip()
+        new_argument = self.new_argument(result, justification, argument.id)
+        self.argued_arguments.append(argument.id)
+    
+        return new_argument
+
+    def vote(self, arg: Argument) -> int:
+        label = self.vote_chain.run(arg.text)
+        label = ''.join(char for char in label.lower() if char.isalpha() or char.isspace())
+        
+        if 'yes' in label:
+            return 1
+        if 'no' in label:
+            return -1
+        # 'undecided'
+        return 0
 
     def clear_memory(self):
         pass
