@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Dict
 
@@ -55,14 +56,31 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
             print(
                 "Executing discussion sequentially. Argumentation phase is starting..."
             )
-
+        # Argumentation
+        random.shuffle(framework.agents)
         for agent in framework.agents:
             for argument in framework.arguments:
+                if agent.id == argument.creator:
+                    continue
                 print_verbose(
                     f"Agent {agent} sees argument {argument}", verbose=verbose
                 )
                 agent.see_argument(argument)
-                agent.argue(argument=argument)
+                new_arg = agent.argue(argument=argument)
+                if new_arg is None:
+                    continue
+                framework.arguments.append(new_arg)
+        # Labelling/Voting
+        random.shuffle(framework.agents)
+        for agent in framework.agents:
+            for arg in framework.arguments:
+                # if agent has already a label in that argument continue
+                if agent.id in arg.labelling.keys():
+                    continue
+                arg.labelling[agent.id] = agent.vote(arg)
+                print_verbose(
+                    f"Agent {agent} voted argument {agent.id} : {arg.labelling[agent.id]}", verbose=verbose
+                )
 
 
 @register_execution_policy
