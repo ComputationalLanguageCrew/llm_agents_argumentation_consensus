@@ -21,6 +21,7 @@ google-api-python-client = "*"
 openai = "*"
 termcolor = "*"
 duckduckgo-search = "*"
+tiktoken = "*"
 
 [requires]
 python_version = "3.10"
