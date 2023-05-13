@@ -101,7 +101,7 @@ class Agent:
         self.engine = engine
 
         template_with_history = f"""
-        Pretend that you are a {self.persona}.
+        Pretend that you are {self.name}, a {self.persona}.
         Support or oppose the following proposition: {{input}}
         You have access to the following tools: {self.engine.no_tools_str}
 
@@ -174,24 +174,35 @@ class Agent:
             template=voting_template, input_variables=["argument"]
         )
 
-        self.vote_chain = LLMChain(prompt=voting_prompt, llm=self.engine.llm)
+        self.vote_chain = LLMChain(
+            prompt=voting_prompt,
+            llm=self.engine.llm,
+            memory=self.engine.memory,
+            verbose=self.engine.verbose,
+        )
 
     def __str__(self):
         return f"{self.id}: {self.name}"
 
-    def new_argument(self, result: str, text: str, argid_ud: str):
-        new_arg = Argument(
+    def new_argument(self, result: str, text: str, target_argument: Argument):
+        new_argument = Argument(
             id=f"{self.id}_{len(self.argued_arguments)+1}",
             text=text,
             creator=self.id,
         )
         if result == "oppose":
-            new_arg.opposes.append(argid_ud)
-            new_arg.labelling[self.id] = -1
+            new_argument.opposes.append(target_argument.id)
+            target_argument.labelling[self.id] = -1
+            print(
+                f"{self.name} votes argument {target_argument.id}: -1 (by opposing argument)"
+            )
         elif result == "support":
-            new_arg.supports.append(argid_ud)
-            new_arg.labelling[self.id] = +1
-        return new_arg
+            new_argument.supports.append(target_argument.id)
+            target_argument.labelling[self.id] = 1
+            print(
+                f"{self.name} votes argument {target_argument.id}: 1 (by supporting argument)"
+            )
+        return new_argument
 
     def see_argument(self, argument: Argument):
         self.seen_arguments.append(argument.id)
@@ -216,7 +227,7 @@ class Agent:
             return None
 
         justification = response.replace(f"[{result}]", "").strip()
-        new_argument = self.new_argument(result, justification, argument.id)
+        new_argument = self.new_argument(result, justification, argument)
         self.argued_arguments.append(argument.id)
 
         return new_argument

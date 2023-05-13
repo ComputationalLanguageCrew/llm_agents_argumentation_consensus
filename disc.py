@@ -11,7 +11,7 @@ from todf.todf import Argument, Discussion
 
 proposition = Argument(
     id="t",
-    text="same-sex marriage should not be allowed",
+    text="The root of all societal problems is capitalism.",
     is_target=True,
     creator="system",
 )
@@ -71,7 +71,49 @@ ag3 = Agent(
     ),
 )
 
-agents = [ag1, ag2, ag3]
+ag4 = Agent(
+    id="ag4",
+    name="Noam Chomsky",
+    persona="""An American public intellectual known for his work in linguistics, political activism, and social criticism.""",
+    engine=AgentEngine(
+        llm,
+        memory=ConversationSummaryBufferMemory(
+            llm=OpenAI(), max_token_limit=300
+        ),
+        tools=[],
+        verbose=True,
+    ),
+)
+
+ag5 = Agent(
+    id="ag5",
+    name="Jordan Peterson",
+    persona="""A Canadian psychologist, author, and media commentator.A classic British liberal and a traditionalist""",
+    engine=AgentEngine(
+        llm,
+        memory=ConversationSummaryBufferMemory(
+            llm=OpenAI(), max_token_limit=300
+        ),
+        tools=[],
+        verbose=True,
+    ),
+)
+
+ag6 = Agent(
+    id="ag3",
+    name="Slavoj Žižek",
+    persona="""Slovenian philosopher, cultural theorist and public intellectual.""",
+    engine=AgentEngine(
+        llm,
+        memory=ConversationSummaryBufferMemory(
+            llm=OpenAI(), max_token_limit=300
+        ),
+        tools=[],
+        verbose=True,
+    ),
+)
+
+agents = [ag5, ag6]
 
 discussion = Discussion(
     proposition=proposition, agents=agents, policy="SEQUENTIAL", verbose=True
