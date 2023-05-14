@@ -257,15 +257,9 @@ class Agent:
         if result == "oppose":
             target_argument.opposed_by.append(new_argument.id)
             target_argument.labelling[self.id] = -1
-            print(
-                f"{self.name} votes argument {target_argument.id}: -1 (by opposing argument)"
-            )
         elif result == "support":
             target_argument.supported_by.append(new_argument.id)
             target_argument.labelling[self.id] = 1
-            print(
-                f"{self.name} votes argument {target_argument.id}: 1 (by supporting argument)"
-            )
         return new_argument
 
     def see_argument(self, argument: Argument):
