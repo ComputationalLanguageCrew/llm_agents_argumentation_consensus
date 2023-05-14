@@ -85,12 +85,14 @@ class Discussion:
         proposition: Argument,
         agents: List[Agent],
         policy: DiscussionExecutionPolicy,
+        summarization_llm,
         verbose: bool = True,
     ):
         self.proposition = proposition
         self.framework = TODF(target=proposition, agents=agents)
         self.execution_policy = policy
         self.verbose = verbose
+        self.summarization_llm = summarization_llm
 
     def __repr__(self):
         return self.proposition
@@ -100,6 +102,27 @@ class Discussion:
         self.execution_policy.exec(
             framework=self.framework, verbose=self.verbose
         )
+
+    def summarize(self):
+        # assumption: first argument is the target and arguments are chronologically sorted
+
+        arguments = "\n\n".join(map(lambda arg: arg.creator + ": " + arg.text, self.framework.arguments[1:]))
+
+        topic = self.framework.target.text
+
+        consensus = {1: "YES", 0: "UNDECIDED", -1: "NO"}[self.consensus()]
+
+        prompt = f"""Given the discussion below:
+
+        Topic: {topic}
+
+        {arguments}
+
+        Consensus decision: {consensus}
+
+        Provide a summary of the discussion, presenting the main arguments provided and comment on the consensus reached."""
+
+        return self.summarization_llm(prompt)
 
     def get_graph(self):
         """
@@ -156,12 +179,5 @@ class Discussion:
         :return: (str) The discussion result
         """
         self.argue()
-        consensus = self.consensus()
-        if consensus > 0:
-            consensus_res_str = "YES"
-        elif consensus < 0:
-            consensus_res_str = "NO"
-        else:
-            consensus_res_str = "INDECIDED"
-        result = f"Consensus decision: {consensus_res_str}"
-        return result
+        summary = self.summarize()
+        return summary

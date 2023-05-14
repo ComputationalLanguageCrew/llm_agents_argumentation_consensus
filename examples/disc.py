@@ -114,10 +114,11 @@ ag6 = Agent(
 
 agents = [ag5, ag6, ag3]
 
-# policy = SequentialExecutionPolicy()
-policy = RoundExecutionPolicy(max_depth=2)
+policy = SequentialExecutionPolicy(max_arguments=5)
+#policy = RoundExecutionPolicy(max_depth=1)
 
 discussion = Discussion(
-    proposition=proposition, agents=agents, policy=policy, verbose=True
+    proposition=proposition, agents=agents, policy=policy, summarization_llm=OpenAI(), verbose=True
 )
-discussion.run()
+
+print(discussion.run())

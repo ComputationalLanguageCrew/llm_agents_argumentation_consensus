@@ -67,7 +67,10 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
 
     name = "SEQUENTIAL"
     description = "Executes discussions in a sequential order."
-    max_arguments = 3
+    max_arguments = 10
+
+    def __init__(self, max_arguments: int = 10):
+        self.max_arguments = max_arguments
 
     @classmethod
     def exec(self, framework: TODF, verbose: bool = False):
@@ -93,7 +96,7 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
         has_new_arguments = True
         while (
             len(framework.arguments) < self.max_arguments
-            or not has_new_arguments
+            and has_new_arguments
         ):
             has_new_arguments = False
             for agent in framework.agents:
