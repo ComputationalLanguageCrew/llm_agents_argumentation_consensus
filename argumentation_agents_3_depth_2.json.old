@@ -1,0 +1,194 @@
+{
+    "0": {
+        "liberal_rich_agent": [
+            {
+                "id": "0_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "A coalition government between the big political powers can prove to be a good choice for the Greek people. It can lead to more stability and cooperation among the parties, which can result in better decision-making and implementation of policies. Additionally, it can help to bridge the gap between different ideologies and bring about a more balanced approach to governance. However, it is important that the coalition is formed with a clear agenda and common goals, and that the parties involved are committed to working together for the benefit of the country.",
+                "agreement_state": "agree",
+                "label": 1
+            }
+        ],
+        "working_class_agent": [
+            {
+                "id": "0_1",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "While a coalition government between big political powers may bring about stability and cooperation, it can also lead to compromises and lack of accountability. It ultimately depends on the specific parties involved and their willingness to work together for the benefit of the Greek people.",
+                "agreement_state": "neutral",
+                "label": 0
+            }
+        ],
+        "middle_class_agent": [
+            {
+                "id": "0_2",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "While a coalition government between the big political powers could potentially bring about more stability and cooperation in the government, it could also lead to compromises and lack of clear direction. It ultimately depends on the specific parties involved and their willingness to work together for the benefit of the Greek people.",
+                "agreement_state": "neutral",
+                "label": 0
+            }
+        ]
+    },
+    "1": {
+        "working_class_agent": [
+            {
+                "id": "1_0_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "As a Greek working class individual with a socialistic background, I believe that a coalition government between big political powers will not necessarily benefit the Greek people. In the past, such governments have often resulted in compromises that favor the interests of the political parties involved rather than the needs of the people. Additionally, a coalition government may not be able to effectively address the economic and social issues facing Greece due to differing ideologies and priorities. Instead, I believe that a government that prioritizes the needs of the working class and implements socialist policies would be more beneficial for the Greek people.",
+                "agreement_state": "disagree",
+                "label": -1
+            },
+            {
+                "id": "1_0_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "As a Greek working class individual with a socialistic background, I believe that prioritizing paying off debt to international creditors will only further harm the Greek people. The austerity measures imposed by these creditors have already caused immense suffering for the working class, and prioritizing debt repayment over social welfare and economic growth will only exacerbate these issues. Instead, I believe that Greece should focus on implementing policies that prioritize the needs of its citizens and promote economic growth, even if it means renegotiating its debt with international creditors.",
+                "agreement_state": "disagree",
+                "label": -1
+            }
+        ],
+        "middle_class_agent": [
+            {
+                "id": "1_1_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "A coalition government between the big political powers could potentially bring about more stability and cooperation in the government, which could lead to better decision-making and more effective policies for the Greek people. However, it is important that the parties involved are willing to work together and put aside their differences for the benefit of the country. It is also important that the coalition government is transparent and accountable to the people, to ensure that their interests are being represented.",
+                "agreement_state": "agree",
+                "label": 1
+            },
+            {
+                "id": "1_1_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "Prioritizing economic growth over austerity measures can lead to increased job opportunities, higher wages, and overall improvement in the standard of living for the Greek people. Austerity measures have been shown to have negative effects on the economy and can lead to social unrest. However, it is important to balance economic growth with responsible fiscal policies to ensure long-term sustainability.",
+                "agreement_state": "agree",
+                "label": 1
+            }
+        ],
+        "liberal_rich_agent": [
+            {
+                "id": "1_2_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "A coalition government between the big political powers can prove to be a good choice for the Greek people. It can lead to more stability and cooperation among the parties, which can result in better decision-making and implementation of policies. Additionally, it can help to bridge the gap between different ideologies and bring about a more balanced approach to governance. However, it is important that the coalition is formed with a clear agenda and common goals, and that the parties involved are committed to working together for the benefit of the country.",
+                "agreement_state": "agree",
+                "label": 1
+            },
+            {
+                "id": "1_2_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "While economic growth is important for the country's prosperity, it should not come at the expense of the environment. Greece has a rich natural heritage that needs to be protected and preserved for future generations. At the same time, the government should strive to find a balance between economic development and environmental protection, by promoting sustainable practices and investing in green technologies.",
+                "agreement_state": "neutral",
+                "label": 0
+            }
+        ]
+    },
+    "2": {
+        "liberal_rich_agent": [
+            {
+                "id": "2_0_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "A coalition government between the big political powers can prove to be a good choice for the Greek people. It can lead to more stability and cooperation among the parties, which can result in better decision-making and implementation of policies. Additionally, it can help to bridge the gap between different ideologies and bring about a more balanced approach to governance. However, it is important that the coalition is formed with a clear agenda and common goals, and that the parties involved are committed to working together for the benefit of the country.",
+                "agreement_state": "agree",
+                "label": 1
+            },
+            {
+                "id": "2_0_1",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "While economic growth is important for the country's prosperity, it should not come at the expense of the environment. Greece has a rich natural heritage that needs to be protected and preserved for future generations. At the same time, the government should strive to find a balance between economic development and environmental protection, by promoting sustainable practices and investing in green technologies. It is important to prioritize both economic growth and environmental protection for the long-term benefit of the Greek people and the planet.",
+                "agreement_state": "neutral",
+                "label": 0
+            },
+            {
+                "id": "2_0_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "A coalition government between the big political powers can prove to be a good choice for the Greek people. It can lead to more stability and cooperation among the parties, which can result in better decision-making and implementation of policies. Additionally, it can help to bridge the gap between different ideologies and bring about a more balanced approach to governance. However, it is important that the coalition is formed with a clear agenda and common goals, and that the parties involved are committed to working together for the benefit of the country.",
+                "agreement_state": "agree",
+                "label": 1
+            },
+            {
+                "id": "2_0_1",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "A coalition government between the big political powers can prove to be a good choice for the Greek people. It can lead to more stability and cooperation among the parties, which can result in better decision-making and implementation of policies. Additionally, it can help to bridge the gap between different ideologies and bring about a more balanced approach to governance. However, it is important that the coalition is formed with a clear agenda and common goals, and that the parties involved are committed to working together for the benefit of the country.",
+                "agreement_state": "agree",
+                "label": 1
+            }
+        ],
+        "middle_class_agent": [
+            {
+                "id": "2_1_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "A coalition government between the big political powers could potentially bring about more stability and cooperation in the government, which could lead to better decision-making and more effective policies for the Greek people. However, it is important that the parties involved are willing to work together and put aside their differences for the benefit of the country. It is also important that the coalition government is transparent and accountable to the people, to ensure that their interests are being represented.",
+                "agreement_state": "agree",
+                "label": 1
+            },
+            {
+                "id": "2_1_1",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "Prioritizing renewable energy sources over fossil fuels can lead to a more sustainable and environmentally friendly future for Greece. It can also reduce dependence on foreign energy sources and create job opportunities in the renewable energy sector. However, it is important to ensure that the transition to renewable energy is done in a responsible and economically feasible manner.",
+                "agreement_state": "agree",
+                "label": 1
+            },
+            {
+                "id": "2_1_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "Prioritizing investment in education and healthcare can lead to a healthier and more educated population, which can have positive effects on the economy and society as a whole. It can also lead to a more equal distribution of resources and opportunities, which can reduce social inequality and improve social cohesion. However, it is important to ensure that the investment is done in a responsible and sustainable manner, to ensure long-term benefits for the Greek people.",
+                "agreement_state": "agree",
+                "label": 1
+            },
+            {
+                "id": "2_1_1",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "A coalition government between the big political powers could potentially bring about more stability and cooperation in the government, which could lead to better decision-making and more effective policies for the Greek people. However, it is important that the parties involved are willing to work together and put aside their differences for the benefit of the country. It is also important that the coalition government is transparent and accountable to the people, to ensure that their interests are being represented.",
+                "agreement_state": "agree",
+                "label": 1
+            }
+        ],
+        "working_class_agent": [
+            {
+                "id": "2_2_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "As a Greek working class individual with a socialistic background, I believe that a coalition government between big political powers will not necessarily benefit the Greek people. In the past, such governments have often resulted in compromises that favor the interests of the political parties involved rather than the needs of the people. Additionally, a coalition government may not be able to effectively address the economic and social issues facing Greece due to differing ideologies and priorities. Instead, I believe that a government that prioritizes the needs of the working class and implements socialist policies would be more beneficial for the Greek people.",
+                "agreement_state": "disagree",
+                "label": -1
+            },
+            {
+                "id": "2_2_1",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "As a Greek working class individual with a socialistic background, I believe that prioritizing paying off debt to international creditors will only further harm the Greek people. The austerity measures imposed by these creditors have already caused immense suffering for the working class, and prioritizing debt repayment over social welfare and economic growth will only exacerbate these issues. Instead, I believe that Greece should focus on implementing policies that prioritize the needs of its citizens and promote economic growth, even if it means renegotiating its debt with international creditors.",
+                "agreement_state": "disagree",
+                "label": -1
+            },
+            {
+                "id": "2_2_0",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "As a Greek working class individual with a socialistic background, I believe that a coalition government between big political powers will not necessarily benefit the Greek people. In the past, such governments have often resulted in compromises that favor the interests of the political parties involved rather than the needs of the people. Additionally, a coalition government may not be able to effectively address the economic and social issues facing Greece due to differing ideologies and priorities. Instead, I believe that a government that prioritizes the needs of the working class and implements socialist policies would be more beneficial for the Greek people.",
+                "agreement_state": "disagree",
+                "label": -1
+            },
+            {
+                "id": "2_2_1",
+                "proposition": "A coalition greek government between the big political powers can prove a good choice for the greek people.",
+                "proposition_id": "0",
+                "argument": "As a Greek working class individual with a socialistic background, I believe that prioritizing renewable energy sources over fossil fuels is crucial for the future of Greece. Not only will it help reduce the country's carbon footprint and contribute to global efforts to combat climate change, but it will also create new job opportunities in the renewable energy sector. Additionally, Greece has abundant natural resources such as wind and solar power that can be harnessed for energy production. Prioritizing renewable energy sources will not only benefit the environment but also the economy and the working class.",
+                "agreement_state": "agree",
+                "label": 1
+            }
+        ]
+    }
+}
