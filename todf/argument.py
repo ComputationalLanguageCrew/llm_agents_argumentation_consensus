@@ -1,7 +1,11 @@
+""" This module provides the Argument class, which is used to represent
+ an argument in a debate or discussion setting."""
+
 from typing import Dict, List, Optional
 
 
 class Argument:
+     """ Represents an individual argument in a debate or discussion setting. """
     def __init__(
         self,
         id: str,

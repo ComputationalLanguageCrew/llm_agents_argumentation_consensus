@@ -22,9 +22,10 @@ openai = "*"
 termcolor = "*"
 duckduckgo-search = "*"
 tiktoken = "*"
+networkx = "*"
 
 [requires]
 python_version = "3.10"
 
 [pipenv]
-allow_prereleases = true
+allow_prereleases = false

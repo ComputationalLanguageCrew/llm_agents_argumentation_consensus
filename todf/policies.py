@@ -1,3 +1,4 @@
+"""This module provides various execution policies for discussions in a target-oriented discussion framework"""
 from __future__ import annotations
 
 import random
@@ -11,15 +12,30 @@ if TYPE_CHECKING:
 
 
 class DiscussionExecutionPolicy(ABC):
+    """An abstract class base for all execution policies
+
+    Attributes:
+    name (str): A string representing the name of the execution policy.
+    description (str): A string representing the description of the execution policy.
+    """
+
     name: str
     description: str
 
     @abstractmethod
-    def exec(cls, framework: TODF, verbose: bool = False):
+    def exec(self, framework: TODF, verbose: bool = False):
+        """
+        Executes the discussion following a specific policy.
+
+        :param framework: (TODF) The target-oriented discussion framework instance.
+        :param verbose: (bool, optional) Indicates whether to print verbose output. Default is False.
+        """
         pass
 
 
 class ExecutionPolicies:
+    """Execution Policies Registry A registry class to manage execution policy subclasses."""
+
     _registry: Dict = {}
 
     @classmethod
@@ -47,12 +63,19 @@ def register_execution_policy(subclass):
 
 @register_execution_policy
 class SequentialExecutionPolicy(DiscussionExecutionPolicy):
+    """Sequential Execution Policy Executes discussions in a sequential order."""
+
     name = "SEQUENTIAL"
     description = "Executes discussions in a sequential order."
     max_arguments = 3
 
     @classmethod
-    def exec(cls, framework: TODF, verbose: bool = False):
+    def exec(self, framework: TODF, verbose: bool = False):
+        """Executes the discussion sequentially.
+
+        :param framework: (TODF) The target-oriented discussion framework instance.
+        :param verbose: (bool, optional) Indicates whether to print verbose output. Default is False.
+        """
         if verbose:
             print(
                 "Executing discussion sequentially. Argumentation phase is starting..."
@@ -106,14 +129,21 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
 
 @register_execution_policy
 class RoundExecutionPolicy(DiscussionExecutionPolicy):
+    """Round Execution Policy Executes discussions in rounds."""
+
     name = "ROUNDS"
     description = "Executes discussions in rounds."
-    max_depth: int
 
     def __init__(self, max_depth: int = 1):
         self.max_depth = max_depth
 
-    def exec(cls, framework: TODF, verbose: bool = False):
+    def exec(self, framework: TODF, verbose: bool = False):
+        """
+        Executes the discussion in rounds.
+
+        :param framework: (TODF) The target-oriented discussion framework instance.
+        :param verbose: (bool, optional) Indicates whether to print verbose output. Default is False.
+        """
         if verbose:
             print(
                 "Executing discussion in rounds. Argumentation phase is starting..."
@@ -122,7 +152,7 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
         discussion: Dict[int, Dict] = {}
 
         # Argumentation
-        while depth <= cls.max_depth:
+        while depth <= self.max_depth:
             random.shuffle(framework.agents)
             if depth == 0:
                 discussion[depth] = {}
@@ -131,7 +161,7 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
                     discussion[depth][agent.id] = []
                     print_verbose(
                         f"Agent {agent} sees argument {proposition}",
-                        verbose=verbose
+                        verbose=verbose,
                     )
                     agent.see_argument(proposition)
                     new_arg = agent.argue(argument=proposition)
@@ -141,18 +171,18 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
                     discussion[depth][agent.id].append(new_arg)
                 depth += 1
                 continue
-            
+
             # Let agents argue on other agents' arguments
             discussion[depth] = {}
             for agent in framework.agents:
                 discussion[depth][agent.id] = []
-                for prev_id, prev_args in discussion[depth-1].items():
+                for prev_id, prev_args in discussion[depth - 1].items():
                     if agent.id == prev_id:
                         continue
                     for prev_arg in prev_args:
                         print_verbose(
                             f"\nAgent {agent} sees argument {prev_arg}",
-                            verbose=verbose
+                            verbose=verbose,
                         )
                         agent.see_argument(prev_arg)
                         new_arg = agent.argue(argument=prev_arg)
@@ -160,9 +190,9 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
                             continue
                         framework.arguments.append(new_arg)
                         discussion[depth][agent.id].append(new_arg)
-            
+
             depth += 1
-        
+
         # Labelling/Voting
         random.shuffle(framework.agents)
         for agent in framework.agents:
@@ -176,13 +206,8 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
                 arg.labelling[agent.id] = agent.vote(arg)
                 print_verbose(
                     f"\nAgent {agent} voted argument {arg.id} : {arg.labelling[agent.id]}",
-                    verbose=verbose
+                    verbose=verbose,
                 )
-                        
-            
-            
-            
-            
 
 
 @register_execution_policy
@@ -193,37 +218,3 @@ class RandomExecutionPolicy(DiscussionExecutionPolicy):
     @classmethod
     def exec(cls, framework: TODF, verbose: bool = False):
         print("Executing discussion randomly.")
-
-
-"""
-
-# Example usage:
-seq_policy = ExecutionPolicyRegistry.get_policy(
-    "sequential_execution_policy"
-)()
-print(seq_policy.name)  # Output: sequential_execution_policy
-print(
-    seq_policy.description
-)  # Output: Executes discussions in a sequential order.
-seq_policy.exec()
-
-round_policy = ExecutionPolicyRegistry.get_policy("round_execution_policy")()
-print(round_policy.name)  # Output: round_execution_policy
-print(round_policy.description)  # Output: Executes discussions in rounds.
-round_policy.exec()
-
-random_policy = ExecutionPolicyRegistry.get_policy("random_execution_policy")()
-print(random_policy.name)  # Output: random_execution_policy
-print(random_policy.description)  # Output: Executes discussions randomly.
-random_policy.exec()
-
-# Get all policies
-all_policies = ExecutionPolicyRegistry.get_policies()
-for policy in all_policies:
-    print(
-        policy.name
-    )  # Output: sequential_execution_policy, round_execution_policy, random_execution_policy
-    print(
-        policy.description
-    )  # Output: Executes discussions in a sequential order., Executes discussions in rounds., Executes discussions randomly.
-"""

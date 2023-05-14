@@ -1,14 +1,19 @@
-from typing import List, Optional, Dict
+"""This module provides classes and functions to simulate the model
+ discussions in a target-oriented discussion framework"""
+
+from typing import List, Dict
 
 from todf.agent import Agent
 from todf.argument import Argument
-from todf.policies import DiscussionExecutionPolicy, ExecutionPolicies
+from todf.policies import DiscussionExecutionPolicy
 from todf.utils import print_verbose
 
 import networkx as nx
 
 
 class TODF:
+    """Represents a target-oriented discussion framework instance."""
+
     def __init__(self, target: Argument, agents: List[Agent]):
         self.target = target
         self.agents = agents
@@ -16,10 +21,22 @@ class TODF:
 
 
 def compute_majority_label(argument: Argument):
+    """Computes the majority label of an argument.
+
+    :param argument: (Argument) The argument to compute the majority label for.
+    :return: (int) The majority label for the argument.
+    """
     return sum(argument.labelling.values())
 
 
 def compute_support(argument: Argument, arguments: Dict[str, Argument]) -> int:
+    """Computes the support label for an argument in discussion.
+
+    :param argument: (Argument) The argument to compute the support for.
+    :param arguments: (Dict[str, Argument]) A dictionary of arguments in the
+                    discussion.
+    :return: (int) The computed support value for the argument.
+    """
     if len(argument.supported_by) == 0 and len(argument.opposed_by):
         # leaf
         return compute_majority_label(argument)
@@ -52,6 +69,9 @@ def compute_support(argument: Argument, arguments: Dict[str, Argument]) -> int:
 
 
 class Discussion:
+    """Represents a discussion that follows the target-oriented approach,
+    involving agents and arguments."""
+
     def __init__(
         self,
         proposition: Argument,
@@ -68,6 +88,7 @@ class Discussion:
         return self.proposition
 
     def run(self):
+        """Executes the discussion."""
         print_verbose("Discussion topic:", self.verbose)
         print_verbose(self.proposition.text, self.verbose, "green")
         print_verbose("Introducing the agents:", self.verbose)
@@ -80,6 +101,11 @@ class Discussion:
         )
 
     def get_graph(self):
+        """
+        Returns the discussion graph.
+
+        :return: (nx.DiGraph) The discussion graph.
+        """
         G = nx.DiGraph()
 
         # create the nodes
@@ -102,9 +128,19 @@ class Discussion:
         return G
 
     def save(self, path: str):
+        """
+        Saves the discussion graph to a file.
+
+        :param path: (str) The path to save the graph file.
+        """
         return nx.write_graphml(self.get_graph(), path)
 
     def consensus(self) -> int:
+        """
+        Computes and returns the consensus of the discussion.
+
+        :return: (int) The consensus value (-1, 0, or 1) for the discussion.
+        """
         arguments = {}
         for argument in self.framework.arguments:
             arguments[argument.id] = argument

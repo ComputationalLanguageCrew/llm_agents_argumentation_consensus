@@ -1,5 +1,11 @@
+"""
+This module contains classes for the implementation of custom dialogue agents
+capable of supporting or opposing propositions using available tools, while
+maintaining persona.
+"""
+
 import re
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Union
 
 from langchain import LLMChain, PromptTemplate
 from langchain.agents import (
@@ -15,12 +21,21 @@ from todf.argument import Argument
 
 
 class CustomPromptTemplate(BaseChatPromptTemplate):
-    # The template to use
+    """
+    A custom prompt template implementation that formats the conversation history,
+    tools, and other necessary information for the language model to understand the
+    context.
+    """
+
     template: str
-    # The list of tools available
     tools: List[Tool]
 
     def format_messages(self, **kwargs) -> str:
+        """
+        Formats the template with the given messages and arguments according to
+        the specified context.
+        """
+
         # Get the intermediate steps (AgentAction, Observation tuples)
         # Format them in a particular way
         intermediate_steps = kwargs.pop("intermediate_steps")
@@ -41,6 +56,11 @@ class CustomPromptTemplate(BaseChatPromptTemplate):
 
 
 class CustomOutputParser(AgentOutputParser):
+    """
+    A custom output parser implementation that understands the output of language
+    model for custom single action agents.
+    """
+
     def parse(self, llm_output: str) -> Union[AgentAction, AgentFinish]:
         # Check if agent should finish
         if "Final Answer:" in llm_output:
@@ -77,7 +97,20 @@ class CustomOutputParser(AgentOutputParser):
 
 
 class AgentEngine:
+    """
+    A class that provides an execution environment for an agent with access
+    to the language model and tools.
+    """
+
     def __init__(self, llm, memory, tools, verbose=False):
+        """
+        Initialize the AgentEngine.
+
+        :param llm: the language model instance
+        :param memory: shared memory object for the engine
+        :param tools: a list of available tools for the agent
+        :param verbose: if True, print log messages; otherwise, remain silent
+        """
         self.llm = llm
         self.memory = memory
         self.tools = tools
@@ -88,11 +121,29 @@ class AgentEngine:
             self.no_tools_str = "None"
 
     def get_tool_names(self):
+        """
+        Get the list of the names of available tools.
+
+        :return: a list of tool names
+        """
         return [tool.name for tool in self.tools]
 
 
 class Agent:
+    """
+    A class representing an agent capable of supporting or opposing propositions
+    using available tools while maintaining the persona.
+    """
+
     def __init__(self, id: str, name: str, persona, engine: AgentEngine):
+        """
+        Initialize the Agent with its unique attributes.
+
+        :param id: a unique identifier for the agent
+        :param name: the name of the agent
+        :param persona: the persona of the agent
+        :param engine: the AgentEngine that provides access to the tools and the language model
+        """
         self.id = id
         self.name = name
         self.persona = persona
@@ -190,6 +241,14 @@ class Agent:
         return f"{self.id}: {self.name}"
 
     def new_argument(self, result: str, text: str, target_argument: Argument):
+        """
+        Create a new argument based on the result of the agent's actions.
+
+        :param result: the result of the agent's actions (either support or oppose)
+        :param text: the text of the argument
+        :param target_argument: the target argument being supported or opposed
+        :return: a new Argument object
+        """
         new_argument = Argument(
             id=f"{self.id}_{len(self.argued_arguments)+1}",
             text=text,
@@ -210,9 +269,20 @@ class Agent:
         return new_argument
 
     def see_argument(self, argument: Argument):
+        """
+        Add an argument to the list of seen arguments.
+
+        :param argument: the Argument object seen by the agent
+        """
         self.seen_arguments.append(argument.id)
 
     def argue(self, argument: Argument) -> Optional[Argument]:
+        """
+        Generate a response for the given argument.
+
+        :param argument: the Argument object to be responded to
+        :return: a new Argument object for the generated response or None if no response
+        """
         response = self.executor.run(argument.text)
 
         match = re.match(
@@ -238,6 +308,12 @@ class Agent:
         return new_argument
 
     def vote(self, arg: Argument) -> int:
+        """
+        Vote on the given argument.
+
+        :param arg: the Argument object to be voted on
+        :return: 1 for 'yes', -1 for 'no', and 0 for 'undecided'
+        """
         label = self.vote_chain.run(arg.text)
         label = "".join(
             char for char in label.lower() if char.isalpha() or char.isspace()
@@ -249,6 +325,3 @@ class Agent:
             return -1
         # 'undecided'
         return 0
-
-    def clear_memory(self):
-        pass
