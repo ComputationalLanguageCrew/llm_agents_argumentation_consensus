@@ -67,12 +67,10 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
 
     name = "SEQUENTIAL"
     description = "Executes discussions in a sequential order."
-    max_arguments = 10
 
     def __init__(self, max_arguments: int = 10):
         self.max_arguments = max_arguments
 
-    @classmethod
     def exec(self, framework: TODF, verbose: bool = False):
         """Executes the discussion sequentially.
 
@@ -95,8 +93,7 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
         random.shuffle(framework.agents)
         has_new_arguments = True
         while (
-            len(framework.arguments) < self.max_arguments
-            and has_new_arguments
+            len(framework.arguments) < self.max_arguments and has_new_arguments
         ):
             has_new_arguments = False
             for agent in framework.agents:
@@ -118,6 +115,9 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
                     else:
                         has_new_arguments = True
                     framework.arguments.append(new_arg)
+
+                    if len(framework.arguments) >= self.max_arguments:
+                        break
 
         # Labelling/Voting
         random.shuffle(framework.agents)
