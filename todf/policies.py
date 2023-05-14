@@ -49,7 +49,7 @@ def register_execution_policy(subclass):
 class SequentialExecutionPolicy(DiscussionExecutionPolicy):
     name = "SEQUENTIAL"
     description = "Executes discussions in a sequential order."
-    max_arguments = 10
+    max_arguments = 3
 
     @classmethod
     def exec(cls, framework: TODF, verbose: bool = False):
