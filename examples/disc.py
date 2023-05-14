@@ -18,7 +18,6 @@ proposition = Argument(
 
 llm = ChatOpenAI(temperature=0.6)
 memory = ConversationSummaryBufferMemory(llm=OpenAI(), max_token_limit=300)
-
 agent_engine = AgentEngine(llm, memory=memory, tools=[], verbose=True)
 
 ag1 = Agent(
@@ -115,7 +114,7 @@ ag6 = Agent(
 
 agents = [ag5, ag6, ag3]
 
-#policy = SequentialExecutionPolicy()
+# policy = SequentialExecutionPolicy()
 policy = RoundExecutionPolicy(max_depth=2)
 
 discussion = Discussion(
