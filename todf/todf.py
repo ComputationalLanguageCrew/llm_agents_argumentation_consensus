@@ -26,10 +26,18 @@ def compute_majority_label(argument: Argument):
     :param argument: (Argument) The argument to compute the majority label for.
     :return: (int) The majority label for the argument.
     """
-    return sum(argument.labelling.values())
+    total_sum = sum(argument.labelling.values())
+    if total_sum > 0:
+        return 1
+    elif total_sum == 0:
+        return 0
+    else:
+        return -1
 
 
-def compute_support(argument: Argument, arguments: Dict[str, Argument]) -> int:
+def compute_support_label(
+    argument: Argument, arguments: Dict[str, Argument]
+) -> int:
     """Computes the support label for an argument in discussion.
 
     :param argument: (Argument) The argument to compute the support for.
@@ -37,7 +45,7 @@ def compute_support(argument: Argument, arguments: Dict[str, Argument]) -> int:
                     discussion.
     :return: (int) The computed support value for the argument.
     """
-    if len(argument.supported_by) == 0 and len(argument.opposed_by):
+    if len(argument.supported_by) == 0 and len(argument.opposed_by) == 0:
         # leaf
         return compute_majority_label(argument)
 
@@ -46,7 +54,7 @@ def compute_support(argument: Argument, arguments: Dict[str, Argument]) -> int:
 
     for child_argument_id in argument.supported_by:
         child_argument = arguments[child_argument_id]
-        child_support = compute_support(child_argument, arguments)
+        child_support = compute_support_label(child_argument, arguments)
         if child_support == 1:
             pro += 1
         elif child_support == -1:
@@ -54,7 +62,7 @@ def compute_support(argument: Argument, arguments: Dict[str, Argument]) -> int:
 
     for child_argument_id in argument.opposed_by:
         child_argument = arguments[child_argument_id]
-        child_support = compute_support(child_argument, arguments)
+        child_support = compute_support_label(child_argument, arguments)
         if child_support == 1:
             con += 1
         elif child_support == -1:
@@ -146,4 +154,4 @@ class Discussion:
             arguments[argument.id] = argument
 
         target = self.framework.target
-        return compute_support(target, arguments)
+        return compute_support_label(target, arguments)
