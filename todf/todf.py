@@ -95,7 +95,7 @@ class Discussion:
     def __repr__(self):
         return self.proposition
 
-    def run(self):
+    def argue(self):
         """Executes the discussion."""
         self.execution_policy.exec(
             framework=self.framework, verbose=self.verbose
@@ -148,3 +148,20 @@ class Discussion:
 
         target = self.framework.target
         return compute_support_label(target, arguments)
+
+    def run(self) -> str:
+        """
+        Executes the discussion and returns the result
+
+        :return: (str) The discussion result
+        """
+        self.argue()
+        consensus = self.consensus()
+        if consensus > 0:
+            consensus_res_str = "YES"
+        elif consensus < 0:
+            consensus_res_str = "NO"
+        else:
+            consensus_res_str = "INDECIDED"
+        result = f"Consensus decision: {consensus_res_str}"
+        return result
