@@ -97,13 +97,6 @@ class Discussion:
 
     def run(self):
         """Executes the discussion."""
-        print_verbose("Discussion topic:", self.verbose)
-        print_verbose(self.proposition.text, self.verbose, "green")
-        print_verbose("Introducing the agents:", self.verbose)
-        for a in self.framework.agents:
-            print_verbose(a.name, self.verbose, "cyan")
-            print_verbose(a.persona, self.verbose, "cyan")
-
         self.execution_policy.exec(
             framework=self.framework, verbose=self.verbose
         )

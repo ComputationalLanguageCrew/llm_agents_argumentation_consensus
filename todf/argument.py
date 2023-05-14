@@ -5,7 +5,8 @@ from typing import Dict, List, Optional
 
 
 class Argument:
-     """ Represents an individual argument in a debate or discussion setting. """
+    """Represents an individual argument in a debate or discussion setting."""
+
     def __init__(
         self,
         id: str,

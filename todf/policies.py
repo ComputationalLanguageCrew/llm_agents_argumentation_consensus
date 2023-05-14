@@ -76,15 +76,23 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
         :param framework: (TODF) The target-oriented discussion framework instance.
         :param verbose: (bool, optional) Indicates whether to print verbose output. Default is False.
         """
-        if verbose:
-            print(
-                "Executing discussion sequentially. Argumentation phase is starting..."
-            )
+        print_verbose("Discussion topic:", verbose)
+        print_verbose(framework.target.text, verbose, "green")
+        print_verbose("Introducing the agents:", verbose)
+        for a in framework.agents:
+            print_verbose(f"\n{a.name}", verbose=verbose, color="cyan")
+            print_verbose(a.persona, verbose, "cyan")
+
+        print_verbose(
+            "\nExecuting discussion sequentially. Argumentation phase is starting...",
+            verbose,
+        )
+
         # Argumentation
         random.shuffle(framework.agents)
         has_new_arguments = True
         while (
-            len(framework.arguments) < cls.max_arguments
+            len(framework.arguments) < self.max_arguments
             or not has_new_arguments
         ):
             has_new_arguments = False
@@ -96,8 +104,9 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
                     ):
                         continue
                     print_verbose(
-                        f"Agent {agent} sees argument {argument}",
+                        f"\nAgent {agent} sees argument {argument}",
                         verbose=verbose,
+                        color="green",
                     )
                     agent.see_argument(argument)
                     new_arg = agent.argue(argument=argument)
@@ -115,15 +124,18 @@ class SequentialExecutionPolicy(DiscussionExecutionPolicy):
                 # on counter argument generation, a label is instantly applied
                 # depending if it supports or opposes
                 if agent.id in arg.labelling.keys():
-                    print(
-                        f"Agent {agent} already voted argument {arg.id} : {arg.labelling[agent.id]}"
+                    print_verbose(
+                        f"\nAgent {agent} already voted argument {arg.id} : {arg.labelling[agent.id]}",
+                        verbose=verbose,
+                        color="yellow",
                     )
                     continue
 
                 arg.labelling[agent.id] = agent.vote(arg)
                 print_verbose(
-                    f"Agent {agent} voted argument {arg.id} : {arg.labelling[agent.id]}",
+                    f"\nAgent {agent} voted argument {arg.id} : {arg.labelling[agent.id]}",
                     verbose=verbose,
+                    color="yellow",
                 )
 
 
@@ -144,10 +156,19 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
         :param framework: (TODF) The target-oriented discussion framework instance.
         :param verbose: (bool, optional) Indicates whether to print verbose output. Default is False.
         """
-        if verbose:
-            print(
-                "Executing discussion in rounds. Argumentation phase is starting..."
-            )
+
+        print_verbose("Discussion topic:", verbose)
+        print_verbose(framework.target.text, verbose, "green")
+        print_verbose("\nIntroducing the agents:", verbose)
+        for a in framework.agents:
+            print_verbose(f"\n{a.name}", verbose=verbose, color="cyan")
+            print_verbose(a.persona, verbose, "cyan")
+
+        print_verbose(
+            "\nExecuting discussion in rounds. Argumentation phase is starting...",
+            verbose=verbose,
+        )
+
         depth = 0
         discussion: Dict[int, Dict] = {}
 
@@ -160,8 +181,9 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
                 for agent in framework.agents:
                     discussion[depth][agent.id] = []
                     print_verbose(
-                        f"Agent {agent} sees argument {proposition}",
+                        f"\nAgent {agent} sees argument {proposition}",
                         verbose=verbose,
+                        color="green",
                     )
                     agent.see_argument(proposition)
                     new_arg = agent.argue(argument=proposition)
@@ -183,6 +205,7 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
                         print_verbose(
                             f"\nAgent {agent} sees argument {prev_arg}",
                             verbose=verbose,
+                            color="green",
                         )
                         agent.see_argument(prev_arg)
                         new_arg = agent.argue(argument=prev_arg)
@@ -199,14 +222,17 @@ class RoundExecutionPolicy(DiscussionExecutionPolicy):
             for arg in framework.arguments:
                 # if agent has already a label in that argument continue
                 if agent.id in arg.labelling.keys():
-                    print(
-                        f"Agent {agent} already voted argument {arg.id} : {arg.labelling[agent.id]}"
+                    print_verbose(
+                        f"\nAgent {agent} already voted argument {arg.id} : {arg.labelling[agent.id]}",
+                        verbose,
+                        color="yellow",
                     )
                     continue
                 arg.labelling[agent.id] = agent.vote(arg)
                 print_verbose(
                     f"\nAgent {agent} voted argument {arg.id} : {arg.labelling[agent.id]}",
                     verbose=verbose,
+                    color="yellow",
                 )
 
 
