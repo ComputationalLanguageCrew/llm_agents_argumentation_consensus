@@ -102,7 +102,8 @@ class Agent:
 
         template_with_history = f"""
         Pretend that you are {self.name}, a {self.persona}.
-        Support or oppose the following proposition: {{input}}
+        You are taking part in a discussion.
+        Support or oppose the given proposition.
         You have access to the following tools: {self.engine.no_tools_str}
 
         {{tools}}
@@ -138,11 +139,15 @@ class Agent:
         [support] I believe that wealth should be equally distributed because it is more fair.
         [oppose] I think that wealth should not be equally distributed and it should be based on work.
         [pass]
+
+        Rules: Final answers should be short
         
         
         Previous conversation history:
         {{history}}
-
+        
+        Proposition: {{input}}
+        
         {{agent_scratchpad}}"""
         prompt_with_history = CustomPromptTemplate(
             template=template_with_history,
@@ -191,13 +196,13 @@ class Agent:
             creator=self.id,
         )
         if result == "oppose":
-            new_argument.opposes.append(target_argument.id)
+            target_argument.opposed_by.append(new_argument.id)
             target_argument.labelling[self.id] = -1
             print(
                 f"{self.name} votes argument {target_argument.id}: -1 (by opposing argument)"
             )
         elif result == "support":
-            new_argument.supports.append(target_argument.id)
+            target_argument.supported_by.append(new_argument.id)
             target_argument.labelling[self.id] = 1
             print(
                 f"{self.name} votes argument {target_argument.id}: 1 (by supporting argument)"

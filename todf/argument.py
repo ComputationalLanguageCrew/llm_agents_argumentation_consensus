@@ -13,8 +13,8 @@ class Argument:
         self.text = text
         self.creator = creator
         self.is_target = is_target
-        self.supports: List[str] = []
-        self.opposes: List[str] = []
+        self.supported_by: List[str] = []
+        self.opposed_by: List[str] = []
         self.labelling: Dict[str, int] = {}
 
     def __str__(self):

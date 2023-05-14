@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, Optional, Dict
 
 from todf.agent import Agent
 from todf.argument import Argument
 from todf.policies import DiscussionExecutionPolicy, ExecutionPolicies
 from todf.utils import print_verbose
+
+import networkx as nx
 
 
 class TODF:
@@ -11,6 +13,42 @@ class TODF:
         self.target = target
         self.agents = agents
         self.arguments: List[Argument] = [target]
+
+
+def compute_majority_label(argument: Argument):
+    return sum(argument.labelling.values())
+
+
+def compute_support(argument: Argument, arguments: Dict[str, Argument]) -> int:
+    if len(argument.supported_by) == 0 and len(argument.opposed_by):
+        # leaf
+        return compute_majority_label(argument)
+
+    pro = 0
+    con = 0
+
+    for child_argument_id in argument.supported_by:
+        child_argument = arguments[child_argument_id]
+        child_support = compute_support(child_argument, arguments)
+        if child_support == 1:
+            pro += 1
+        elif child_support == -1:
+            con += 1
+
+    for child_argument_id in argument.opposed_by:
+        child_argument = arguments[child_argument_id]
+        child_support = compute_support(child_argument, arguments)
+        if child_support == 1:
+            con += 1
+        elif child_support == -1:
+            pro += 1
+
+    if pro > con:
+        return 1
+    elif pro < con:
+        return -1
+    else:
+        return compute_majority_label(argument)
 
 
 class Discussion:
@@ -41,8 +79,35 @@ class Discussion:
             framework=self.framework, verbose=self.verbose
         )
 
-    def save(self):
-        pass
+    def get_graph(self):
+        G = nx.DiGraph()
 
-    def concensus(self):
-        pass
+        # create the nodes
+        for argument in self.framework.arguments:
+            # initialize support function label with 2
+            G.add_node(
+                argument.id,
+                author=argument.creator,
+                text=argument.text,
+            )
+
+        # create the edges
+        for argument in self.framework.arguments:
+            for arg_from in argument.supported_by:
+                G.add_edge(arg_from, argument, type="supports", color="green")
+
+            for arg_from in argument.opposed_by:
+                G.add_edge(arg_from, argument, type="opposes", color="red")
+
+        return G
+
+    def save(self, path: str):
+        return nx.write_graphml(self.get_graph(), path)
+
+    def consensus(self) -> int:
+        arguments = {}
+        for argument in self.framework.arguments:
+            arguments[argument.id] = argument
+
+        target = self.framework.target
+        return compute_support(target, arguments)
